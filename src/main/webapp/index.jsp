@@ -25,7 +25,7 @@
 
         .bar {
             height: 30px;
-            background-color: #007bff;
+            background-color: #0091ff;
             border-radius: 8px;
             color: white;
             text-align: right;
@@ -46,6 +46,22 @@
         .highlight {
             border: 1px solid white;
             background: radial-gradient(circle farthest-corner at left, #007bff, #5e008a) !important;
+        }
+
+        /* Skeleton animation */
+        .skeleton {
+            background: linear-gradient(60deg, #0091ff 25%, #33a6ff 50%, #0091ff 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
         }
     </style>
 </head>
@@ -74,7 +90,7 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <h3 class="text-center">排行榜</h3>
+                    <h3 class="text-center">即時圖表</h3>
                     <div id="leaderboard" class="bar-container">
                         <!-- 動態的 bar 將被注入到這 -->
                     </div>
@@ -131,7 +147,7 @@
                     barContainer.className = 'mb-2';
 
                     const bar = document.createElement('div');
-                    bar.className = 'bar';
+                    bar.className = 'bar skeleton';
                     bar.style.width = `\${(item.score / maxClicks) * 100}%`;
 
                     if (item.username === username) {
