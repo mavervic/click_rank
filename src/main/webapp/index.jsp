@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 
-    
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
@@ -45,6 +44,7 @@
         }
 
         .highlight {
+            border: 1px solid white;
             background: radial-gradient(circle farthest-corner at left, #007bff, #5e008a) !important;
         }
     </style>
@@ -95,17 +95,20 @@
 
             let count = 0;
             let username = '';
-            let leaderboardData = [
-                { user: 'User1', clicks: 10 },
-                { user: 'User2', clicks: 5 },
-                { user: 'User3', clicks: 2 }
-            ];
+
+            const socket = new WebSocket('ws://localhost:8080/click_rank/click');
+
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                updateLeaderboard(data);
+            };
 
             startButton.addEventListener('click', function () {
                 username = usernameInput.value.trim();
                 if (username) {
                     view1.style.display = 'none';
                     view2.style.display = '';
+                    socket.send(username + ':' + count);
                 } else {
                     alert('請輸入你的名字');
                 }
@@ -115,45 +118,29 @@
                 count++;
                 clickCount.textContent = count;
 
-                // 更新排行榜數據
-                updateLeaderboard(username, count);
+                // Send click info to WebSocket server
+                socket.send(username + ':' + count);
             });
 
-            function updateLeaderboard(user, clicks) {
-                if (!user) {
-                    return;
-                }
-                // 更新參賽者點擊次數
-                const userIndex = leaderboardData.findIndex(item => item.user === user);
-                if (userIndex !== -1) {
-                    leaderboardData[userIndex].clicks = clicks;
-                } else {
-                    leaderboardData.push({ user, clicks });
-                }
-
-                // 依照點擊次數排序
-                leaderboardData.sort((a, b) => b.clicks - a.clicks);
-
-                // 取得最大點擊次數
-                const maxClicks = leaderboardData[0].clicks;
-
-                // 使用DocumentFragment减少DOM操作
+            function updateLeaderboard(data) {
                 const fragment = document.createDocumentFragment();
-                leaderboardData.forEach(item => {
+                // 取得最大點擊次數
+                const maxClicks = data[0].score;
+                data.forEach((item, index) => {
                     const barContainer = document.createElement('div');
                     barContainer.className = 'mb-2';
 
                     const bar = document.createElement('div');
                     bar.className = 'bar';
-                    bar.style.width = `${(item.clicks / maxClicks) * 100}%`;
+                    bar.style.width = `\${(item.score / maxClicks) * 100}%`;
 
-                    if (item.user === user) {
+                    if (item.username === username) {
                         bar.classList.add('highlight');
                     }
 
                     const barLabel = document.createElement('span');
                     barLabel.className = 'bar-label';
-                    barLabel.textContent = `${item.user} (${item.clicks})`;
+                    barLabel.textContent = `\${item.username} (\${item.score})`;
 
                     bar.appendChild(barLabel);
                     barContainer.appendChild(bar);
@@ -164,9 +151,6 @@
                 leaderboard.innerHTML = '';
                 leaderboard.appendChild(fragment);
             }
-
-            // 初始化排行榜
-            updateLeaderboard();
         });
     </script>
 </body>
