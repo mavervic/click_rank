@@ -109,21 +109,32 @@
             const usernameInput = document.getElementById('username');
             const leaderboard = document.getElementById('leaderboard');
 
-            let count = 0;
-            let username = '';
+            // 還原之前的資料
+            let count = globalThis.sessionStorage.getItem('count') ?? 0;
+            clickCount.innerText = count;
+            let username = globalThis.sessionStorage.getItem('username') ?? '';
 
-            const socket = new WebSocket('ws://localhost:8080/click_rank/click');
+            // 還原之前的畫面
+            if(username) {
+                view1.style.display = 'none';
+                view2.style.display = '';
+            } 
+
+            // 連線資訊
+            const host = globalThis.location.host;
+            const socket = new WebSocket('ws://' + host + '/click_rank/click');
 
             socket.onmessage = function (event) {
                 const data = JSON.parse(event.data);
                 updateLeaderboard(data);
             };
-
+            
             startButton.addEventListener('click', function () {
                 username = usernameInput.value.trim();
                 if (username) {
                     view1.style.display = 'none';
                     view2.style.display = '';
+                    globalThis.sessionStorage.setItem('username', username);
                     socket.send(username + ':' + count);
                 } else {
                     alert('請輸入你的名字');
@@ -133,6 +144,7 @@
             clickButton.addEventListener('click', function () {
                 count++;
                 clickCount.textContent = count;
+                globalThis.sessionStorage.setItem('count', count);
 
                 // Send click info to WebSocket server
                 socket.send(username + ':' + count);
