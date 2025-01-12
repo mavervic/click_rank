@@ -127,8 +127,7 @@
             let time = globalThis.sessionStorage.getItem('time') ?? 30;
             timerElement.textContent = time;
             if(time <= 0) {
-                retryButton.style.display = '';
-                clickButton.disabled = true;
+                endGame();
             }
 
             // 還原之前的資料
@@ -138,10 +137,19 @@
 
             // 還原之前的畫面
             if(username) {
+                startGame();
+            }
+
+            function startGame() {
                 view1.style.display = 'none';
                 view2.style.display = '';
+                startTimer();
+            }
 
-                // 倒數計時
+            /**
+             * 開始倒數計時
+             */
+            function startTimer() {
                 const interval = setInterval(() => {
                     let time = parseInt(timerElement.textContent);
                     if (time > 0) {
@@ -149,12 +157,16 @@
                         globalThis.sessionStorage.setItem('time', time);
                         timerElement.textContent = time;
                     } else {
-                        alert('時間到!');
-                        retryButton.style.display = '';
-                        clickButton.disabled = true;
+                        endGame();
                         clearInterval(interval);
                     }
                 }, 1000);
+            }
+
+
+            function endGame() {
+                retryButton.style.display = '';
+                clickButton.disabled = true;
             }
 
 
@@ -171,26 +183,9 @@
             startButton.addEventListener('click', function () {
                 username = usernameInput.value.trim();
                 if (username) {
-                    view1.style.display = 'none';
-                    view2.style.display = '';
+                    startGame();
                     globalThis.sessionStorage.setItem('username', username);
                     socket.send(username + ':' + count);
-
-                    // 倒數計時
-                    const interval = setInterval(() => {
-                        let time = parseInt(timerElement.textContent);
-                        if (time > 0) {
-                            time--;
-                            globalThis.sessionStorage.setItem('time', time);
-                            timerElement.textContent = time;
-                        } else {
-                            alert('時間到!');
-                            retryButton.style.display = '';
-                            clickButton.disabled = true;
-                            clearInterval(interval);
-                        }
-                    }, 1000);
-
                 } else {
                     alert('請輸入你的名字');
                 }
