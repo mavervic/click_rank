@@ -35,7 +35,8 @@
             line-height: 30px;
             margin-bottom: 5px;
             position: relative;
-            max-width: 100%; /* 確保橫條圖永遠不會超出容器 */
+            /* 確保橫條圖永遠不會超出容器 */
+            max-width: 100%;
         }
 
         .bar-label {
@@ -126,7 +127,7 @@
             // 還原倒數計時
             let time = globalThis.sessionStorage.getItem('time') ?? 30;
             timerElement.textContent = time;
-            if(time <= 0) {
+            if (time <= 0) {
                 endGame();
             }
 
@@ -136,7 +137,7 @@
             let username = globalThis.sessionStorage.getItem('username') ?? '';
 
             // 還原之前的畫面
-            if(username) {
+            if (username) {
                 startGame();
             }
 
@@ -174,12 +175,11 @@
             // 連線資訊
             const host = globalThis.location.host;
             const socket = new WebSocket('ws://' + host + '/click_rank/click');
-
             socket.onmessage = function (event) {
                 const data = JSON.parse(event.data);
                 updateLeaderboard(data);
             };
-            
+
             startButton.addEventListener('click', function () {
                 username = usernameInput.value.trim();
                 if (username) {
