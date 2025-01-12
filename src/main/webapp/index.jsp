@@ -12,6 +12,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <!-- bootstrap icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root {
             color-scheme: only dark;
@@ -85,8 +87,18 @@
             <div id="view2" class="col-md-6 offset-md-3" style="display: none;">
                 <div class="card">
                     <div class="card-body text-center">
-                        <h2 id="click-count" class="mt-3">0</h2>
+                        <div>
+                            點擊次數:
+                            <h2 id="click-count" class="mt-3">0</h2>
+                        </div>
                         <button id="click-button" type="button" class="btn btn-primary">點擊我!</button>
+                        <button id="retry-button" type="button" class="btn btn-secondary" style="display: none;">
+                            <i class="bi bi-arrow-clockwise"></i>重新開始!
+                        </button>
+                        <div>
+                            倒數計時:
+                            <h3 id="timer" class="mt-3">30</h3>
+                        </div>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -105,9 +117,19 @@
             const view2 = document.getElementById('view2');
             const startButton = document.getElementById('start-button');
             const clickButton = document.getElementById('click-button');
+            const retryButton = document.getElementById('retry-button');
             const clickCount = document.getElementById('click-count');
             const usernameInput = document.getElementById('username');
             const leaderboard = document.getElementById('leaderboard');
+            const timerElement = document.getElementById('timer');
+
+            // 還原倒數計時
+            let time = globalThis.sessionStorage.getItem('time') ?? 30;
+            timerElement.textContent = time;
+            if(time <= 0) {
+                retryButton.style.display = '';
+                clickButton.disabled = true;
+            }
 
             // 還原之前的資料
             let count = globalThis.sessionStorage.getItem('count') ?? 0;
@@ -118,7 +140,24 @@
             if(username) {
                 view1.style.display = 'none';
                 view2.style.display = '';
-            } 
+
+                // 倒數計時
+                const interval = setInterval(() => {
+                    let time = parseInt(timerElement.textContent);
+                    if (time > 0) {
+                        time--;
+                        globalThis.sessionStorage.setItem('time', time);
+                        timerElement.textContent = time;
+                    } else {
+                        alert('時間到!');
+                        retryButton.style.display = '';
+                        clickButton.disabled = true;
+                        clearInterval(interval);
+                    }
+                }, 1000);
+            }
+
+
 
             // 連線資訊
             const host = globalThis.location.host;
@@ -136,6 +175,22 @@
                     view2.style.display = '';
                     globalThis.sessionStorage.setItem('username', username);
                     socket.send(username + ':' + count);
+
+                    // 倒數計時
+                    const interval = setInterval(() => {
+                        let time = parseInt(timerElement.textContent);
+                        if (time > 0) {
+                            time--;
+                            globalThis.sessionStorage.setItem('time', time);
+                            timerElement.textContent = time;
+                        } else {
+                            alert('時間到!');
+                            retryButton.style.display = '';
+                            clickButton.disabled = true;
+                            clearInterval(interval);
+                        }
+                    }, 1000);
+
                 } else {
                     alert('請輸入你的名字');
                 }
@@ -179,6 +234,13 @@
                 leaderboard.innerHTML = '';
                 leaderboard.appendChild(fragment);
             }
+
+            retryButton.addEventListener('click', function () {
+                globalThis.sessionStorage.removeItem('count');
+                globalThis.sessionStorage.removeItem('username');
+                globalThis.sessionStorage.removeItem('time');
+                globalThis.location.reload();
+            });
         });
     </script>
 </body>
