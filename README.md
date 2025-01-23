@@ -1,6 +1,6 @@
-# Click Rand
+# Click Rank
 
-Click Rand 是一個透過內部網路進行滑鼠點擊速率的小遊戲，並支援了多人競賽
+Click Rank 是一個透過內部網路進行量測滑鼠點擊速率的小遊戲，並支援了多人競賽
 
 這款遊戲的特點或使用技術有:
 
@@ -12,9 +12,9 @@ Click Rand 是一個透過內部網路進行滑鼠點擊速率的小遊戲，並
     * 僅有使用原生 JavaScript API
     * CSS 使用了 Bootstrap 5 來簡化開發
 
-# Click Rand
+# Click Rank
 
-Click Rand is a small game that measures mouse click speed over an internal network and supports multiplayer competition.
+Click Rank is a small game that measures mouse click speed over an internal network and supports multiplayer competition.
 
 ## Features and Technologies
 
