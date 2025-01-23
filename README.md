@@ -2,11 +2,11 @@
 
 Click Rank 是一個透過內部網路進行量測滑鼠點擊速率的小遊戲，並支援了多人競賽
 
-這款遊戲的特點或使用技術有:
+## 這款遊戲的特點或使用技術
 
-* Redis
+* **Redis**
     * 排名的方式是使用 redis 的 sorted sets 來達成
-* Java
+* **Java**
     * 使用 WebSocket 連線技術
     * 使用 `JSP` 作為前端渲染模板
     * 僅有使用原生 JavaScript API
