@@ -93,13 +93,13 @@
                             <h2 id="click-count" class="mt-3">0</h2>
                         </div>
                         <button id="click-button" type="button" class="btn btn-primary">點擊我!</button>
-                        <button id="retry-button" type="button" class="btn btn-secondary" style="display: none;">
-                            <i class="bi bi-arrow-clockwise"></i>重新開始!
-                        </button>
                         <div>
                             倒數計時:
                             <h3 id="timer" class="mt-3">30</h3>
                         </div>
+                        <button id="retry-button" type="button" class="btn btn-secondary" style="display: none;">
+                            <i class="bi bi-arrow-clockwise"></i>重新開始!
+                        </button>
                     </div>
                 </div>
                 <div class="mt-4">
